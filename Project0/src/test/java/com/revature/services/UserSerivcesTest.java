@@ -1,6 +1,7 @@
 package com.revature.services;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,18 +25,19 @@ public class UserSerivcesTest {
 	@InjectMocks
 	private BicycleCustomerServices bicycleService = new BicycleCustomerServicesImpl();
 	
-	private static Set<Bicycle> mockavailableBicyclesByColor;
+	private static Set<Bicycle> mockavailableBicycles;
 	
 	@BeforeAll
 	public static void mockavailableBicyclesSetup() {
-		mockavailableBicyclesByColor = new HashSet<>();
+		mockavailableBicycles = new HashSet<>();
 		
 		for (int i = 1; i<=5; i++) {
 			Bicycle bicycle = new Bicycle();
 			bicycle.setId(i);
 			if (i<3)
 				bicycle.setColor("White");
-			mockavailableBicyclesByColor.add(bicycle);
+				bicycle.setBrand("Mongoose");
+			mockavailableBicycles.add(bicycle);
 	}
 		
 	}
@@ -44,8 +46,8 @@ public class UserSerivcesTest {
 	public void searchByColorExists() {
 		String color = "White";
 		
-		when(bicycleDAO.getAll()).thenReturn(mockavailableBicyclesByColor);
-		Set<Bicycle> actualColors = bicycleService.searchAvailableBicycleByColor(color);
+		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
+		Set<Bicycle> actualColors = bicycleService.searchAvailableBicycles(color);
 		boolean onlyWhite = true; 
 		for (Bicycle bicycle : actualColors) {
 			if(!bicycle.getColor().equals(color))
@@ -54,14 +56,41 @@ public class UserSerivcesTest {
 		
 		assertTrue(onlyWhite);
 		
-}
+	}
+	
 	@Test
 	public void searchByColorDoesntExist() {
 		String color = "kdsj;fklaghjkghfkjd";
 		
-		when(bicycleDAO.getAll()).thenReturn(mockavailableBicyclesByColor);
-		Set<Bicycle> actualBikes = bicycleService.searchAvailableBicycleByColor(color);
+		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
+		Set<Bicycle> actualBikes = bicycleService.searchAvailableBicyclesByColor(color);
 		
 		assertTrue(actualBikes.isEmpty()); 
 	}
-}	
+	
+	@Test
+	public void searchByBrandExists() {
+		String brand = "Mongoose";
+		
+		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
+		Set<Bicycle> actualBrands = bicycleService.searchAvailableBicycleByBrand(brand);
+		boolean onlyMongoose = true; 
+		for (Bicycle bicycle : actualBrands) {
+			if(!bicycle.getColor().equals(brand))
+				onlyMongoose = false;
+		}
+		
+		assertTrue(onlyMongoose);
+	}
+	
+	@Test
+	public void searchByBrandDoesntExist() {
+		String brand = "Puffy";
+		
+		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
+		Set<Bicycle> actualBrands = bicycleService.searchAvailableBicycleByBrand(brand);
+		
+		assertTrue(actualBrands.isEmpty()); 
+	}
+
+}
