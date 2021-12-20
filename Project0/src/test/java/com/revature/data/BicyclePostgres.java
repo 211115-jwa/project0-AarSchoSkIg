@@ -79,8 +79,33 @@ public class BicyclePostgres implements BicycleDAO {
 	}
 	@Override
 	public Set<Bicycle> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<Bicycle> allBicycles = new HashSet<>();
+		
+		try (Connection conn = connUtil.getConnection()) {
+			String sql = "select * from pet";
+			Statement stmt = conn.createStatement();
+			ResultSet resultSet = stmt.executeQuery(sql);
+			
+			// while the result set has another row
+			while (resultSet.next()) {
+				// create a new bicycle object
+				Bicycle bicycle = new Bicycle();
+				// pull the data from each row in the result set
+				// and put it into the java object so that we can use it here
+				bicycle.setId(resultSet.getInt("id"));
+				bicycle.setBrand(resultSet.getString("brand"));
+				bicycle.setColor(resultSet.getString("color"));
+				bicycle.setTerrainType(resultSet.getString("terraintype"));
+				
+				allBicycles.add(bicycle);
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return allBicycles;
 	}
 
 	@Override
