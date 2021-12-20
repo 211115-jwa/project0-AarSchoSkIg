@@ -13,7 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.revature.beans.Bicycle;
-import com.revature.data.BicycleCustomerServices;
+import com.revature.services.UserServices;
 import com.revature.data.BicycleDAO;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,7 +23,7 @@ public class UserSerivcesTest {
 	private BicycleDAO bicycleDAO;
 	
 	@InjectMocks
-	private BicycleCustomerServices bicycleService = new BicycleCustomerServicesImpl();
+	private UserServices userService = new UserServicesImpl();
 	
 	private static Set<Bicycle> mockavailableBicycles;
 	
@@ -47,7 +47,13 @@ public class UserSerivcesTest {
 		String color = "White";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualColors = bicycleService.searchAvailableBicycles(color);
+		Set<Bicycle> actualColors;
+		try {
+			actualColors = userService.searchAvailableBicycles(color);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		boolean onlyWhite = true; 
 		for (Bicycle bicycle : actualColors) {
 			if(!bicycle.getColor().equals(color))
@@ -63,7 +69,7 @@ public class UserSerivcesTest {
 		String color = "kdsj;fklaghjkghfkjd";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualBikes = bicycleService.searchAvailableBicyclesByColor(color);
+		Set<Bicycle> actualBikes = userService.searchAvailableBicyclesByColor(color);
 		
 		assertTrue(actualBikes.isEmpty()); 
 	}
@@ -73,7 +79,7 @@ public class UserSerivcesTest {
 		String brand = "Mongoose";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualBrands = bicycleService.searchAvailableBicycleByBrand(brand);
+		Set<Bicycle> actualBrands = userService.searchAvailableBicycleByBrand(brand);
 		boolean onlyMongoose = true; 
 		for (Bicycle bicycle : actualBrands) {
 			if(!bicycle.getColor().equals(brand))
@@ -88,7 +94,7 @@ public class UserSerivcesTest {
 		String brand = "Puffy";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualBrands = bicycleService.searchAvailableBicycleByBrand(brand);
+		Set<Bicycle> actualBrands = userService.searchAvailableBicycleByBrand(brand);
 		
 		assertTrue(actualBrands.isEmpty()); 
 	}
