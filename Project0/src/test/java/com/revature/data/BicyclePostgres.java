@@ -109,7 +109,6 @@ public class BicyclePostgres implements BicycleDAO {
 	}
 
 	@Override
-	@Override
 	public void updateBicycle(Bicycle dataToUpdate) {
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
