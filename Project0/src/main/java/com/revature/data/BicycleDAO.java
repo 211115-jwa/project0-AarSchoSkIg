@@ -7,7 +7,7 @@ public interface BicycleDAO {
 	
 	public int create(Bicycle dataToAdd);
 	public Bicycle getById(int id);
-	public Set<Bicycle> getByBrand(String brand);
+	public Bicycle getByBrand(String brand);
 	public Set<Bicycle> getByColor(String color);
 	public Set<Bicycle> getByTerrainType(String terrainType);
 	public Set<Bicycle> getAll();

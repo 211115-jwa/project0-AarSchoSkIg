@@ -15,6 +15,7 @@ import com.revature.utils.ConnectionUtility;
 public class BicyclePostgres implements BicycleDAO {
 	private ConnectionUtility connUtil = ConnectionUtility.getConnectionUtil();
 	private BicycleDAO bicycleDao = new BicyclePostgres();
+	private int id;
 	@Override
 	public int create(Bicycle dataToAdd) {
 		int generatedId = 0;
@@ -171,14 +172,28 @@ public class BicyclePostgres implements BicycleDAO {
 	}
 
 	@Override
-	public Set<Bicycle> getByBrand(String brand) {
-		Set<Bicycle> availableBicycleBrands = bicycleDao.getByBrand("Available");
-		
-		availableBicycleBrands = availableBicycleBrands.stream()
-				.filter(bicycle -> bicycle.getBrand().toLowerCase().contains(brand.toLowerCase()))
-				.collect(Collectors.toSet());
-		return availableBicycleBrands;
+	public Bicycle getByBrand(String brand) {
+		Bicycle bicycle = null;
+
+		try (Connection conn = connUtil.getConnection()) {
+			String sql = "select * from bicycle where brand=?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, brand);
+
+			ResultSet resultSet = pStmt.executeQuery();
+
+			if (resultSet.next()) {
+				bicycle = new Bicycle();
+				bicycle.setBrand(resultSet.getString("brand"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return bicycle;
 	}
+
 
 	@Override
 	public Set<Bicycle> getByColor(String color) {
