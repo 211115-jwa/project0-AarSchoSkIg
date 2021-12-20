@@ -13,17 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.revature.beans.Bicycle;
-import com.revature.services.UserServices;
 import com.revature.data.BicycleDAO;
 
 @ExtendWith(MockitoExtension.class)
-public class UserSerivcesTest {
+public class UserServicesTest {
 	
 	@Mock
 	private BicycleDAO bicycleDAO;
 	
 	@InjectMocks
-	private UserServices userService = new UserServicesImpl();
+	private UserServices userService = new UserServicesImplm();
 	
 	private static Set<Bicycle> mockavailableBicycles;
 	
@@ -47,13 +46,7 @@ public class UserSerivcesTest {
 		String color = "White";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualColors;
-		try {
-			actualColors = userService.searchAvailableBicycles(color);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Set<Bicycle> actualColors = userService.searchAvailableBicyclesByColor(color);
 		boolean onlyWhite = true; 
 		for (Bicycle bicycle : actualColors) {
 			if(!bicycle.getColor().equals(color))
@@ -79,7 +72,7 @@ public class UserSerivcesTest {
 		String brand = "Mongoose";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualBrands = userService.searchAvailableBicycleByBrand(brand);
+		Set<Bicycle> actualBrands = userService.searchAvailableBicyclesByBrand(brand);
 		boolean onlyMongoose = true; 
 		for (Bicycle bicycle : actualBrands) {
 			if(!bicycle.getColor().equals(brand))
@@ -94,7 +87,7 @@ public class UserSerivcesTest {
 		String brand = "Puffy";
 		
 		when(bicycleDAO.getAll()).thenReturn(mockavailableBicycles);
-		Set<Bicycle> actualBrands = userService.searchAvailableBicycleByBrand(brand);
+		Set<Bicycle> actualBrands = userService.searchAvailableBicyclesByBrand(brand);
 		
 		assertTrue(actualBrands.isEmpty()); 
 	}

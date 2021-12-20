@@ -7,12 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.revature.beans.Bicycle;
+import com.revature.utils.ConnectionUtility;
 
 public class BicyclePostgres implements BicycleDAO {
-	private ConnectionUtil connUtil = ConnectionUtil.getConnectionUtil();
-
+	private ConnectionUtility connUtil = ConnectionUtility.getConnectionUtil();
+	private BicycleDAO bicycleDao = new BicyclePostgres();
 	@Override
 	public int create(Bicycle dataToAdd) {
 		int generatedId = 0;
@@ -109,7 +111,7 @@ public class BicyclePostgres implements BicycleDAO {
 	}
 
 	@Override
-	public void updateBicycle(Bicycle dataToUpdate) {
+	public void update(Bicycle dataToUpdate) {
 		try (Connection conn = connUtil.getConnection()) {
 			conn.setAutoCommit(false);
 			
@@ -166,6 +168,36 @@ public class BicyclePostgres implements BicycleDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public Set<Bicycle> getByBrand(String brand) {
+		Set<Bicycle> availableBicycleBrands = bicycleDao.getByBrand("Available");
+		
+		availableBicycleBrands = availableBicycleBrands.stream()
+				.filter(bicycle -> bicycle.getBrand().toLowerCase().contains(brand.toLowerCase()))
+				.collect(Collectors.toSet());
+		return availableBicycleBrands;
+	}
+
+	@Override
+	public Set<Bicycle> getByColor(String color) {
+		Set<Bicycle> availableBicycleColors = bicycleDao.getByColor("Available");
+		
+		availableBicycleColors = availableBicycleColors.stream()
+				.filter(bicycle -> bicycle.getColor().toLowerCase().contains(color.toLowerCase()))
+				.collect(Collectors.toSet());
+		return availableBicycleColors;
+	}
+
+	@Override
+	public Set<Bicycle> getByTerrainType(String terrainType) {
+		Set<Bicycle> availableBicycleTerrainTypes = bicycleDao.getByTerrainType("Available");
+		
+		availableBicycleTerrainTypes = availableBicycleTerrainTypes.stream()
+				.filter(bicycle -> bicycle.getTerrainType().toLowerCase().contains(terrainType.toLowerCase()))
+				.collect(Collectors.toSet());
+		return availableBicycleTerrainTypes;
 	}
 	
 	
