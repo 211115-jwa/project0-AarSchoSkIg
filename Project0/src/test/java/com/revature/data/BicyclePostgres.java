@@ -109,15 +109,66 @@ public class BicyclePostgres implements BicycleDAO {
 	}
 
 	@Override
-	public void update(Bicycle dataToUpdate) {
-		// TODO Auto-generated method stub
-
+	@Override
+	public void updateBicycle(Bicycle dataToUpdate) {
+		try (Connection conn = connUtil.getConnection()) {
+			conn.setAutoCommit(false);
+			
+			String sql = "update bicycle set "
+					+ "brand=?, color=?, terraintype=?"
+					+ "where id=?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, dataToUpdate.getBrand());
+			pStmt.setString(2, dataToUpdate.getColor());
+			pStmt.setString(3, dataToUpdate.getTerrainType());
+			pStmt.setInt(6, dataToUpdate.getId());
+			
+			int rowsAffected = pStmt.executeUpdate();
+			
+			if (rowsAffected==1) {
+				conn.commit();
+			} else {
+				conn.rollback();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
+
 
 	@Override
 	public void delete(Bicycle dataToDelete) {
-		// TODO Auto-generated method stub
+		try (Connection conn = connUtil.getConnection()) {
+			conn.setAutoCommit(false);
 
+			String sql = "delete from bicycle "
+					+ "where id=?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setInt(1, dataToDelete.getId());
+
+			int rowsAffected = pStmt.executeUpdate();
+
+			if (rowsAffected==1) {
+				sql="delete from bicycle where bicycleID=?";
+				PreparedStatement pStmt2 = conn.prepareStatement(sql);
+				pStmt2.setInt(1, dataToDelete.getId());
+				rowsAffected = pStmt2.executeUpdate();
+				
+				if (rowsAffected<=1) {
+					conn.commit();
+				} else {
+					conn.rollback();
+				}
+			} else {
+				conn.rollback();
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
+	
+	
 
 }
