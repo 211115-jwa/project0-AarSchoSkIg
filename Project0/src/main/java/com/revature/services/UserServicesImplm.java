@@ -86,9 +86,13 @@ public class UserServicesImplm implements UserServices {
 
 	@Override
 	public Set<Bicycle> searchAvailableBicyclesByBrand(String brand) {
-		// TODO Auto-generated method stub
-		return null;
+		Set<Bicycle> availableBicycleBrands = bicycleDao.getByBrand("Available");
+		availableBicycleBrands = availableBicycleBrands.stream()
+				.filter(bicycle -> bicycle.getBrand().toLowerCase().contains(brand.toLowerCase()))
+				.collect(Collectors.toSet());	
+		
+		return availableBicycleBrands;
+
+
 	}
-
-
 }

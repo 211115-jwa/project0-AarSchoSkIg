@@ -7,15 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.revature.beans.Bicycle;
 import com.revature.utils.ConnectionUtility;
 
 public class BicyclePostgres implements BicycleDAO {
 	private ConnectionUtility connUtil = ConnectionUtility.getConnectionUtil();
-	private BicycleDAO bicycleDao = new BicyclePostgres();
-	private int id;
+	
 	@Override
 	public int create(Bicycle dataToAdd) {
 		int generatedId = 0;
@@ -172,8 +170,8 @@ public class BicyclePostgres implements BicycleDAO {
 	}
 
 	@Override
-	public Bicycle getByBrand(String brand) {
-		Bicycle bicycle = null;
+	public Set<Bicycle> getByBrand(String brand) {
+		Set<Bicycle> allBrandsOfBicycles = new HashSet<>();
 
 		try (Connection conn = connUtil.getConnection()) {
 			String sql = "select * from bicycle where brand=?";
@@ -183,36 +181,77 @@ public class BicyclePostgres implements BicycleDAO {
 			ResultSet resultSet = pStmt.executeQuery();
 
 			if (resultSet.next()) {
-				bicycle = new Bicycle();
+				Bicycle bicycle = new Bicycle();
+				bicycle.setId(resultSet.getInt("id"));
 				bicycle.setBrand(resultSet.getString("brand"));
+				bicycle.setColor(resultSet.getString("color"));
+				bicycle.setTerrainType(resultSet.getString("terraintype"));
+				
+				allBrandsOfBicycles.add(bicycle);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		return bicycle;
+		return allBrandsOfBicycles;
 	}
 
 
 	@Override
 	public Set<Bicycle> getByColor(String color) {
-		Set<Bicycle> availableBicycleColors = bicycleDao.getByColor("Available");
-		
-		availableBicycleColors = availableBicycleColors.stream()
-				.filter(bicycle -> bicycle.getColor().toLowerCase().contains(color.toLowerCase()))
-				.collect(Collectors.toSet());
-		return availableBicycleColors;
+		Set<Bicycle> allColorsOfBicycles = new HashSet<>();
+
+		try (Connection conn = connUtil.getConnection()) {
+			String sql = "select * from bicycle where brand=?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, color);
+
+			ResultSet resultSet = pStmt.executeQuery();
+
+			if (resultSet.next()) {
+				Bicycle bicycle = new Bicycle();
+				bicycle.setId(resultSet.getInt("id"));
+				bicycle.setBrand(resultSet.getString("brand"));
+				bicycle.setColor(resultSet.getString("color"));
+				bicycle.setTerrainType(resultSet.getString("terraintype"));
+				
+				allColorsOfBicycles.add(bicycle);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return allColorsOfBicycles;
 	}
 
 	@Override
 	public Set<Bicycle> getByTerrainType(String terrainType) {
-		Set<Bicycle> availableBicycleTerrainTypes = bicycleDao.getByTerrainType("Available");
-		
-		availableBicycleTerrainTypes = availableBicycleTerrainTypes.stream()
-				.filter(bicycle -> bicycle.getTerrainType().toLowerCase().contains(terrainType.toLowerCase()))
-				.collect(Collectors.toSet());
-		return availableBicycleTerrainTypes;
+		Set<Bicycle> allTerrainTypesOfBicycles = new HashSet<>();
+
+		try (Connection conn = connUtil.getConnection()) {
+			String sql = "select * from bicycle where brand=?";
+			PreparedStatement pStmt = conn.prepareStatement(sql);
+			pStmt.setString(1, terrainType);
+
+			ResultSet resultSet = pStmt.executeQuery();
+
+			if (resultSet.next()) {
+				Bicycle bicycle = new Bicycle();
+				bicycle.setId(resultSet.getInt("id"));
+				bicycle.setBrand(resultSet.getString("brand"));
+				bicycle.setColor(resultSet.getString("color"));
+				bicycle.setTerrainType(resultSet.getString("terraintype"));
+				
+				allTerrainTypesOfBicycles.add(bicycle);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return allTerrainTypesOfBicycles;
 	}
 	
 	
